@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticketmaster — Ticket Selection</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ WAITING ROOM ══ -->
+  <div id="waiting-screen" class="screen active">
+    <div class="tm-logo">ticket<span>master</span></div>
+    <div class="queue-box">
+      <div class="queue-title">You're in the virtual waiting room</div>
+      <div class="queue-number" id="queue-num">847</div>
+      <div class="queue-label" id="queue-label">people ahead of you</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="q-bar" style="width:2%"></div>
+      </div>
+      <div class="progress-text" id="q-progress-text">Estimated wait: calculating…</div>
+      <div class="queue-info-row">
+        <div class="queue-info-card">
+          <div class="queue-info-val" id="qi-released">—</div>
+          <div class="queue-info-lbl">Tickets released</div>
+        </div>
+        <div class="queue-info-card">
+          <div class="queue-info-val" id="qi-selling">FAST</div>
+          <div class="queue-info-lbl">Selling speed</div>
+        </div>
+        <div class="queue-info-card">
+          <div class="queue-info-val" id="qi-left">—</div>
+          <div class="queue-info-lbl">Remaining</div>
+        </div>
+      </div>
+      <div class="queue-event-wrap">
+        <div class="queue-msg">Tickets on sale for</div>
+        <div class="queue-event">THE ERAS TOUR — STADIUM EDITION</div>
+        <div class="queue-date">Saturday, Aug 9 · State Farm Stadium · Glendale, AZ</div>
+      </div>
+      <div class="dots-loader" id="dots-loader">
+        <div class="dot-l"></div><div class="dot-l"></div><div class="dot-l"></div>
+      </div>
+      <button class="enter-btn" id="enter-btn" onclick="enterVenue()">🎟 Enter Now — Get Your Tickets!</button>
+    </div>
+  </div>
+
+  <!-- ══ VENUE ══ -->
+  <div id="venue-screen" class="screen">
+    <div class="venue-header">
+      <div class="venue-header-left">
+        <div class="vh-logo">ticket<span>master</span></div>
+        <div class="vh-event">THE ERAS TOUR — STADIUM EDITION</div>
+        <div class="vh-sub">Sat Aug 9 · State Farm Stadium · Glendale, AZ · Floor GA + Reserved Seating</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="timer-box">
+          <div class="timer-label">Time remaining</div>
+          <div class="timer-val" id="timer-val">2:00</div>
+        </div>
+        <div class="cart-box" onclick="toggleCart()" title="Toggle cart">
+          <div class="cart-count" id="cart-count">0</div>
+          <div class="cart-label">🛒 Cart</div>
+        </div>
+      </div>
+    </div>
+    <div class="venue-body">
+      <div class="sidebar">
+        <div>
+          <div class="sidebar-title">Available seats</div>
+          <div class="avail-count" id="avail-count">—</div>
+          <div class="avail-label">seats remaining</div>
+        </div>
+        <div>
+          <div class="sidebar-title">Filter by section</div>
+          <div class="section-filter" id="section-filter"></div>
+        </div>
+        <div class="legend">
+          <div class="sidebar-title">Legend</div>
+          <div class="legend-row"><div class="legend-dot" style="background:#3b82f6"></div>Available</div>
+          <div class="legend-row"><div class="legend-dot" style="background:#22c55e"></div>In your cart</div>
+          <div class="legend-row"><div class="legend-dot" style="background:#2d3748"></div>Taken / sold</div>
+          <div class="legend-row"><div class="legend-dot" style="background:#d97706"></div>GA Pit</div>
+        </div>
+        <div class="qty-section">
+          <div class="sidebar-title">Quantity</div>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <div class="qty-val" id="qty-val">2</div>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px">tickets per click</div>
+        </div>
+        <button class="checkout-btn" id="checkout-btn" onclick="goCheckout()" disabled>Checkout</button>
+      </div>
+      <div class="map-area" id="map-area">
+        <canvas id="venue-canvas"></canvas>
+        <div class="seat-tooltip" id="seat-tooltip"></div>
+      </div>
+      <div class="cart-panel" id="cart-panel"></div>
+    </div>
+  </div>
+
+  <!-- ══ CHECKOUT ══ -->
+  <div id="checkout-screen" class="screen">
+    <div class="checkout-card">
+      <div class="checkout-icon" id="co-icon">🎉</div>
+      <div class="checkout-title" id="co-title">You got them!</div>
+      <div class="checkout-sub" id="co-sub">Order confirmed. Here's your summary:</div>
+      <div class="timeout-msg" id="timeout-msg">⏰ Time's up! But here's what you grabbed:</div>
+      <div class="order-box" id="order-box"></div>
+      <div class="score-row">
+        <div class="score-card">
+          <div class="score-val" id="sc-seats">0</div>
+          <div class="score-lbl">Seats snagged</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="sc-speed">—</div>
+          <div class="score-lbl">Avg speed</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="sc-rank">—</div>
+          <div class="score-lbl">Panicker rank</div>
+        </div>
+      </div>
+      <button class="play-again-btn" onclick="resetGame()">🔄 Try Again</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
