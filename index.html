@@ -1,133 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ticketmaster — Ticket Selection</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HAIL MARY // SHIP INTERFACE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div id="app">
 
-  <!-- ══ WAITING ROOM ══ -->
-  <div id="waiting-screen" class="screen active">
-    <div class="tm-logo">ticket<span>master</span></div>
-    <div class="queue-box">
-      <div class="queue-title">You're in the virtual waiting room</div>
-      <div class="queue-number" id="queue-num">847</div>
-      <div class="queue-label" id="queue-label">people ahead of you</div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="q-bar" style="width:2%"></div>
+<canvas id="stars"></canvas>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="flicker"></div>
+
+<!-- ============ BOOT ============ -->
+<div id="boot" class="boot">
+  <pre id="bootlog" class="bootlog"></pre>
+</div>
+
+<!-- ============ SCREENSAVER / IDLE ============ -->
+<div id="idle" class="idle hidden">
+  <div class="idle-inner">
+    <div class="idle-ship" id="idleShip"></div>
+    <div class="idle-clock" id="idleClock">00:00:00</div>
+    <div class="idle-label">HAIL MARY &mdash; STANDBY MODE</div>
+    <div class="idle-sub" id="idleSub">ALL SYSTEMS NOMINAL</div>
+    <div class="idle-hint">[ TOUCH PANEL TO RESUME ]</div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="app hidden">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">✦</span>
+      <div>
+        <div class="brand-name">HAIL MARY</div>
+        <div class="brand-sub">ПРОЕКТ ЗДРАВСТВУЙ МЭРИ &middot; CTRL-1</div>
       </div>
-      <div class="progress-text" id="q-progress-text">Estimated wait: calculating…</div>
-      <div class="queue-info-row">
-        <div class="queue-info-card">
-          <div class="queue-info-val" id="qi-released">—</div>
-          <div class="queue-info-lbl">Tickets released</div>
-        </div>
-        <div class="queue-info-card">
-          <div class="queue-info-val" id="qi-selling">FAST</div>
-          <div class="queue-info-lbl">Selling speed</div>
-        </div>
-        <div class="queue-info-card">
-          <div class="queue-info-val" id="qi-left">—</div>
-          <div class="queue-info-lbl">Remaining</div>
-        </div>
-      </div>
-      <div class="queue-event-wrap">
-        <div class="queue-msg">Tickets on sale for</div>
-        <div class="queue-event">THE ERAS TOUR — STADIUM EDITION</div>
-        <div class="queue-date">Saturday, Aug 9 · State Farm Stadium · Glendale, AZ</div>
-      </div>
-      <div class="dots-loader" id="dots-loader">
-        <div class="dot-l"></div><div class="dot-l"></div><div class="dot-l"></div>
-      </div>
-      <button class="enter-btn" id="enter-btn" onclick="enterVenue()">🎟 Enter Now — Get Your Tickets!</button>
     </div>
+
+    <div class="topstats">
+      <div class="tstat"><span>MISSION DAY</span><b id="tMissionDay">—</b></div>
+      <div class="tstat"><span>SHIP TIME UTC</span><b id="tClock">—</b></div>
+      <div class="tstat"><span>SYS INTEGRITY</span><b id="tIntegrity">—</b></div>
+      <div class="tstat"><span>SPIN</span><b id="tSpin">—</b></div>
+      <div class="tstat found"><span>ARCHIVE UNLOCKED</span><b id="tFound">0/0</b></div>
+    </div>
+
+    <div class="topctl">
+      <button class="icobtn" id="btnSound" title="Audio">♪</button>
+      <button class="icobtn" id="btnHelp" title="Help">?</button>
+    </div>
+  </header>
+
+  <div id="alertBanner" class="alert-banner hidden">
+    <span class="warn">⚠</span>
+    <div class="ab-body">
+      <div class="ab-title" id="abTitle">ALERT</div>
+      <div class="ab-sub" id="abSub"></div>
+    </div>
+    <span class="warn">⚠</span>
+    <button class="ab-ack" id="abAck">ACK</button>
   </div>
 
-  <!-- ══ VENUE ══ -->
-  <div id="venue-screen" class="screen">
-    <div class="venue-header">
-      <div class="venue-header-left">
-        <div class="vh-logo">ticket<span>master</span></div>
-        <div class="vh-event">THE ERAS TOUR — STADIUM EDITION</div>
-        <div class="vh-sub">Sat Aug 9 · State Farm Stadium · Glendale, AZ · Floor GA + Reserved Seating</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <div class="timer-box">
-          <div class="timer-label">Time remaining</div>
-          <div class="timer-val" id="timer-val">2:00</div>
-        </div>
-        <div class="cart-box" onclick="toggleCart()" title="Toggle cart">
-          <div class="cart-count" id="cart-count">0</div>
-          <div class="cart-label">🛒 Cart</div>
-        </div>
-      </div>
-    </div>
-    <div class="venue-body">
-      <div class="sidebar">
-        <div>
-          <div class="sidebar-title">Available seats</div>
-          <div class="avail-count" id="avail-count">—</div>
-          <div class="avail-label">seats remaining</div>
-        </div>
-        <div>
-          <div class="sidebar-title">Filter by section</div>
-          <div class="section-filter" id="section-filter"></div>
-        </div>
-        <div class="legend">
-          <div class="sidebar-title">Legend</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#3b82f6"></div>Available</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#22c55e"></div>In your cart</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#2d3748"></div>Taken / sold</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#d97706"></div>GA Pit</div>
-        </div>
-        <div class="qty-section">
-          <div class="sidebar-title">Quantity</div>
-          <div class="qty-row">
-            <button class="qty-btn" onclick="changeQty(-1)">−</button>
-            <div class="qty-val" id="qty-val">2</div>
-            <button class="qty-btn" onclick="changeQty(1)">+</button>
-          </div>
-          <div style="font-size:11px;color:#6b7280;margin-top:4px">tickets per click</div>
-        </div>
-        <button class="checkout-btn" id="checkout-btn" onclick="goCheckout()" disabled>Checkout</button>
-      </div>
-      <div class="map-area" id="map-area">
-        <canvas id="venue-canvas"></canvas>
-        <div class="seat-tooltip" id="seat-tooltip"></div>
-      </div>
-      <div class="cart-panel" id="cart-panel"></div>
-    </div>
-  </div>
+  <main class="frame">
 
-  <!-- ══ CHECKOUT ══ -->
-  <div id="checkout-screen" class="screen">
-    <div class="checkout-card">
-      <div class="checkout-icon" id="co-icon">🎉</div>
-      <div class="checkout-title" id="co-title">You got them!</div>
-      <div class="checkout-sub" id="co-sub">Order confirmed. Here's your summary:</div>
-      <div class="timeout-msg" id="timeout-msg">⏰ Time's up! But here's what you grabbed:</div>
-      <div class="order-box" id="order-box"></div>
-      <div class="score-row">
-        <div class="score-card">
-          <div class="score-val" id="sc-seats">0</div>
-          <div class="score-lbl">Seats snagged</div>
-        </div>
-        <div class="score-card">
-          <div class="score-val" id="sc-speed">—</div>
-          <div class="score-lbl">Avg speed</div>
-        </div>
-        <div class="score-card">
-          <div class="score-val" id="sc-rank">—</div>
-          <div class="score-lbl">Panicker rank</div>
-        </div>
-      </div>
-      <button class="play-again-btn" onclick="resetGame()">🔄 Try Again</button>
-    </div>
-  </div>
+    <nav class="rail" id="rail"></nav>
 
+    <section class="stage">
+      <div class="stage-head">
+        <div class="sh-title" id="stageTitle">OVERVIEW</div>
+        <div class="sh-crumbs" id="stageCrumb">SYS / ROOT</div>
+      </div>
+      <div class="stage-body" id="stage"></div>
+    </section>
+
+    <aside class="side">
+      <div class="panel">
+        <div class="p-head">VITALS</div>
+        <div class="p-body" id="vitals"></div>
+      </div>
+      <div class="panel grow">
+        <div class="p-head">EVENT LOG</div>
+        <div class="p-body log" id="eventlog"></div>
+      </div>
+      <div class="panel">
+        <div class="p-head">POWER DIST</div>
+        <div class="p-body pwr" id="power"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="term">
+    <div class="term-head">
+      <span class="dot"></span> MARY &mdash; ONBOARD INTELLIGENCE
+      <span class="term-hint">type <b>help</b> &middot; <b>list</b> &middot; or just talk</span>
+      <button class="icobtn small" id="btnTermToggle" title="Collapse">▾</button>
+    </div>
+    <div class="term-body" id="termBody"></div>
+    <div class="term-input">
+      <span class="prompt">grace@hailmary:~$</span>
+      <input id="termInput" autocomplete="off" spellcheck="false" placeholder="…" />
+    </div>
+  </footer>
+</div>
+
+<!-- ============ DOCUMENT READER ============ -->
+<div id="reader" class="reader hidden">
+  <div class="reader-box">
+    <div class="reader-head">
+      <div>
+        <div class="rd-title" id="rdTitle">DOC</div>
+        <div class="rd-meta" id="rdMeta"></div>
+      </div>
+      <button class="icobtn" id="rdClose">✕</button>
+    </div>
+    <div class="reader-body" id="rdBody"></div>
+    <div class="reader-foot" id="rdFoot"></div>
+  </div>
 </div>
 
 <script src="app.js"></script>
